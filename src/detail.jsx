@@ -3,7 +3,8 @@ import styled from 'styled-components'
 
 // styled-components 사용 장점
 // 1. css 파일을 열지 않아도 된다.
-// 2. 
+// 2. 여기 적은 스타일은 다른 JS 파일에 오염되지 않음
+// 3. 페이지 로딩 시간 단축 : <style></style> 태그에 들어가기 때문
 let YellowButton = styled.button`
   background : yellow;
   color : black;

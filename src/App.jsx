@@ -1,12 +1,14 @@
-import { useState } from 'react'
+import { createContext, useState } from 'react'
 import './App.css'
 import mainBannerImg from './img/bg.png'
 import data from './data.js'
-import { Routes, Route, Link, useNavigate, Outlet, useParams } from 'react-router-dom' 
+import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom' 
 import Detail from './detail.jsx'
+import axios from 'axios'
+import Cart from './Cart.jsx'
 
 function App() {
-  let [shoes] = useState(data);
+  let [shoes, setShoes] = useState(data);
   let navigate = useNavigate();
   
   return (
@@ -21,8 +23,8 @@ function App() {
       </div>
       <div className='main-banner' style={{ backgroundImage: 'url('+ mainBannerImg+')' }}></div>
       <Routes>
-        <Route path='/' element={<Product shoes={shoes}/>} />
-        <Route path='/detail/:id' element={<Detail shoes={shoes}/>} />
+        <Route path='/' element={<Product shoes={shoes} setShoes={setShoes}/>}/>
+        <Route path='/detail/:id' element={<Detail shoes={shoes} />}/>
         <Route path='*' element={<div>없는 페이지임</div>} />
         <Route path='/about' element={<About/>}>
           <Route path='member' element={<div>멤버임</div>} />
@@ -33,6 +35,7 @@ function App() {
           <Route path='two' element={<p>생일기념 쿠폰받기</p>} />
         </Route>
         <Route path='*' element={<div>없는 페이지임</div>} />
+        <Route path='/cart' element={<Cart />}></Route>
       </Routes>
     </div>
   )
@@ -66,6 +69,7 @@ function About() {
 
 function Product(props) {
   return (
+    <>
     <div className='main-product-container'>
       {
         props.shoes.map(shoes => (
@@ -77,6 +81,30 @@ function Product(props) {
         ))
       }
     </div>
+    <button className='btn' onClick={() => {
+      axios.get('https://codingapple1.github.io/shop/data2.json')
+        .then((results) => { 
+          console.log(results.data);
+          let copy = [...props.shoes, ...results.data];
+          console.log(copy);
+          props.setShoes(copy);
+        })
+        .catch(() => {
+          console.log('실패')
+        })
+
+        // axios.post('/asjdhkas', { name : 'kim'})
+        // Promise.all([axios.get('/url1'), axios.get('/url2')])
+        // .then(() => {
+        // })
+        
+        // 원래는 문자만 주고 받을 수 있음. 따옴표 쳐놓으면 array, object 보낼 수 있음(JSON)
+        // fetch('https://codingapple1.github.io/shop/data2.json')
+        // .then(resultjs => resultjs.json())
+        // .then(data => {})
+        
+      }}>더보기</button>
+    </>
   )
 }
 

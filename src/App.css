@@ -27,17 +27,19 @@ body {
 
 .main-product-container {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
 }
 
 .main-product {
-  display: inline;
   text-align: center;
+  flex-basis: calc(33.33% - 10px);
+  margin-bottom: 10px;
 }
 
 .main-product-img {
-  width: 80%;
+  width: 100%;
 }
 
 .detail-product-container {
@@ -51,7 +53,7 @@ body {
 }
 
 .btn {
-  width: 100%;
+  width: 50%;
   border: none;
   border-radius: 10px;
   padding: 20px;
@@ -69,4 +71,21 @@ body {
   height: 500px;
   background-size: cover;
   background-position: center;
+}
+
+.tab-menu {
+  display: block;
+}
+
+.alert-warning {
+  text-align: center;
+}
+
+.start {
+  opacity: 0;
+}
+
+.end {
+  opacity: 1;
+  transition: opacity 0.5s;
 }

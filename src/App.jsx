@@ -24,7 +24,7 @@ function App() {
     <div className="App">
       <div className='navbar'>
         <ul>
-          <li><img src='/vite.svg'></img></li>
+          <li onClick={ () => { navigate('/') }}><img src='/vite.svg'></img></li>
           <li><Link to='/'>HOME</Link></li>
           <li onClick={ () => { navigate('/detail/0') }}>상세페이지</li>
           <li onClick={ () => { navigate('/about') }}>ABOUT</li>

@@ -1,23 +1,6 @@
 // redux 를 보관하는 상자
 import { configureStore, createSlice } from "@reduxjs/toolkit";
-
-// 컴포넌트간 state 공유 편해짐
-// useState()
-// 공유할 필요 없을 때는 넣지 말자
-let user = createSlice({
-    name : 'user',
-    initialState : 'kim',
-    // 1. state 수정 함수 만들기
-    // 2. export
-    // 3. 사용 (dispath)
-    reducers : {
-        setUserName(state) {
-            return 'john' + state
-        }
-    }
-})
-
-export let { setUserName } = user.actions
+import user from './userSlice.js'
 
 let stock = createSlice({
     name : 'stock',
@@ -32,12 +15,12 @@ let cart = createSlice({
     ],
     reducers : {
         setCount(state) {
-            return state + 1;
+            state[0].name = 'Purple'
         }
     }
 })
 
-export let { setCount } = user.actions
+export let { setCount } = cart.actions
 
 export default configureStore ({
     reducer: {

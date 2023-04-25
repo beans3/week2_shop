@@ -2,6 +2,8 @@ import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import Nav from 'react-bootstrap/Nav';
+import { addItem } from './store.js'
+import { useDispatch } from 'react-redux';
 
 // styled-components 사용 장점
 // 1. css 파일을 열지 않아도 된다.
@@ -45,6 +47,8 @@ function Detail(props) {
   let [num, setNum] = useState('');
   let [tab, setTab] = useState(1);
   let [fade, setFade] = useState('')
+  let dispatch = useDispatch()
+
   useEffect(() => {
     let a = setTimeout(() => {
       setFade('end')
@@ -98,7 +102,9 @@ function Detail(props) {
       <div className='detail-product-container'>  
         <div className='detail-product'>
           <img className='detail-product-img' src={props.shoes[id].img}></img>
-          <button className='btn'>주문하기</button>
+          <button className='btn' onClick={ () => {
+            dispatch(addItem({id : 3, name : 'Pink', count : 1}))
+          }}>주문하기</button>
           <h2>{props.shoes[id].title}</h2>
           <p>{props.shoes[id].price}</p>
           <p>{props.shoes[id].content}</p>

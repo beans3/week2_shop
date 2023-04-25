@@ -16,11 +16,17 @@ let cart = createSlice({
     reducers : {
         setCount(state) {
             state[0].name = 'Purple'
+        },
+        addCount(state, action) {
+            state[action.payload].count++
+        },
+        addItem(state, action) {
+            state.push(action.payload)
         }
-    }
+    },
 })
 
-export let { setCount } = cart.actions
+export let { setCount, addCount, addItem } = cart.actions
 
 export default configureStore ({
     reducer: {

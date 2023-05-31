@@ -74,6 +74,12 @@ body {
   background-position: center;
 }
 
+.detail-product-no-img {
+  height: 500px;
+  background-size: cover;
+  background-position: center;
+}
+
 .tab-menu {
   display: block;
 }

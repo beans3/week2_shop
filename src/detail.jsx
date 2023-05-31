@@ -50,6 +50,18 @@ function Detail(props) {
   let dispatch = useDispatch()
 
   useEffect(() => {
+    // console.log(id)
+    let orgWatched = localStorage.getItem('watched')
+    orgWatched = JSON.parse(orgWatched)
+    if (!orgWatched.includes(id)) {
+      orgWatched.push(id)
+    }
+    localStorage.setItem('watched', JSON.stringify(orgWatched))
+  }, [id])
+
+  console.log(localStorage.getItem('watched'))
+
+  useEffect(() => {
     let a = setTimeout(() => {
       setFade('end')
     }, 200)
@@ -68,17 +80,17 @@ function Detail(props) {
     //  for (let i = 0; i < 10000; i++) {
     //   console.log(i);
     //  }
-    console.log(num);
+    // console.log(num);
     if (isNaN(num) == true) {
       alert('숫자만 입력하세요');
     }
     let a = setTimeout(() => { setAlert(false) }, 2000)
-    console.log('안녕2')
+    // console.log('안녕2')
     return () => {
       // clean up function
       // use effect 실행 전에 실행됨
       // ex. 기존 타이머는 삭제
-      console.log('안녕1')
+      // console.log('안녕1')
       clearTimeout(a) // mount시 실행 안되고 unmount시 실행됨
       // 서버로 데이터 요청하는 코드(2초 소요), 기존 데이터 요청은 제거해야 함
     }
@@ -87,8 +99,6 @@ function Detail(props) {
   // 재렌더링마다 실행
   // 1회 실행
   // componenet가 삭제될 때 한 번
-  
-  console.log(id);
 
   return (
     <div className={ `start ${fade}`}>

@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useDeferredValue, useEffect, useState, useTransition } from 'react'
 import './App.css'
 import mainBannerImg from './img/bg.png'
 import data from './data.js'
@@ -25,6 +25,12 @@ function App() {
   let [listIndex, setListIndex] = useState(3)
   let [allData, setAllData] = useState([])
   let navigate = useNavigate()
+  let [name, setName] = useState('')
+  let [isPending, startTransition] = useTransition()
+  let nameState = useDeferredValue(name) // 늦게 처리하고 싶은 state 넣음
+
+  let [count, setCount] = useState(0)
+  let [age, setAge] = useState(20)
 
   function loadingMore() {
     axios
@@ -36,6 +42,13 @@ function App() {
     .catch(() => {
       console.log('실패')
     })
+  }
+
+  function addAge() {
+    setAge(age + 1)
+    if (count < 3) {
+      setCount(count + 1)
+    }
   }
 
   // 초기 데이터 설정
@@ -68,11 +81,10 @@ function App() {
   // state 공유 안해도 됨
   // 같은 화면에 같은 요청 시도해도 하나만 시도
   // ajax 결과 캐싱 가능
-  let resultName = useQuery('nameData', () => {
-    return axios.get('https://codingapple1.github.io/userdata.json').then((a) => {
-      console.log('요청됨')
-      return a.data
-    });
+  let resultName = useQuery('nameData', async () => {
+    const a = await axios.get('https://codingapple1.github.io/userdata.json')
+    console.log('요청됨')
+    return a.data
   }, { staleTime : 2000 })
 
   return (
@@ -87,7 +99,7 @@ function App() {
           <li onClick={ () => { navigate('/event/one') }}>EVENT1</li>
           <li onClick={ () => { navigate('/event/two') }}>EVENT2</li>
           <li>
-            { resultName.isLoading ? '로딩중입니다.' : resultName.data.name }
+          { resultName.isLoading ? '로딩중입니다.' : resultName.data.name }
           </li>
         </ul>
       </div>
@@ -96,9 +108,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Product listIndex={listIndex} isHide={isHide} allData={allData} loadingMore={loadingMore} navigate={navigate}/>}/>
           <Route path='/detail/:id' element={
-            
-              <Detail shoes={shoes} />
-            
+              <Detail allData={allData} />
           }/>
           <Route path='*' element={<div>없는 페이지임</div>} />
           <Route path='/about' element={<About/>}>
@@ -148,17 +158,17 @@ function Product(props) {
     <>
     <div className='main-product-container'>
       {
-        props.allData.map(shoes => (
-          <div className='main-product' key={shoes.id} onClick={ () => {
-            props.navigate('/detail/' + shoes.id)
+        props.allData.map(item => (
+          <div className='main-product' key={item.id} onClick={ () => {
+            props.navigate('/detail/' + item.id)
           }}>
-            {!shoes.img ? (
+            {!item.img ? (
               <img className='main-product-no-img' src="/vite.svg"></img>
             ) : (
-              <img className='main-product-img' src={shoes.img}></img>
+              <img className='main-product-img' src={item.img}></img>
             )}
-            <h4>{shoes.title}</h4>
-            <p>{shoes.content}</p>
+            <h4>{item.title}</h4>
+            <p>{item.content}</p>
           </div>
         ))
       }

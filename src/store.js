@@ -9,13 +9,13 @@ let stock = createSlice({
 
 let cart = createSlice({
     name : 'cart',
-    initialState : [
-      {id : 0, name : 'White and Black', count : 2},
-      {id : 2, name : 'Grey Yordan', count : 1}
-    ],
+    initialState : [],
     reducers : {
         setCount(state) {
             state[0].name = 'Purple'
+        },
+        subCount(state, action) {
+            state[action.payload].count--
         },
         addCount(state, action) {
             state[action.payload].count++
@@ -26,7 +26,7 @@ let cart = createSlice({
     },
 })
 
-export let { setCount, addCount, addItem } = cart.actions
+export let { setCount, addCount, subCount, addItem } = cart.actions
 
 export default configureStore ({
     reducer: {

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import Nav from 'react-bootstrap/Nav';
 import { addItem } from './store.js'
@@ -9,16 +9,39 @@ import { useDispatch } from 'react-redux';
 // 1. css 파일을 열지 않아도 된다.
 // 2. 여기 적은 스타일은 다른 JS 파일에 오염되지 않음
 // 3. 페이지 로딩 시간 단축 : <style></style> 태그에 들어가기 때문
-let YellowButton = styled.button`
+let DefaultButton = styled.button`
   background : ${ props => props.bg };
-  color : ${ props => props.bg == 'blue' ? 'white' : 'black' };
+  color : ${ props => props.bg == '#27374D' ? 'white' : 'black' };
   padding : 10px;
+  width: 25%;
+  border: none;
+  border-radius: 10px;
+  padding: 20px;
+  font-size: 20px;
+  cursor: pointer;
+`
+
+let DefaultInput = styled.input`
+  padding : 10px;
+  width: 25%;
+  border: none;
+  border-radius: 10px;
+  padding: 20px;
+  font-size: 20px;
+  text-align: center;
+`
+let CountText = styled.span`
+  padding : 10px;
+  width: 25%;
+  font-size: 20px;
+  text-align: center;
+  display: inline-block;
 `
 // styled component 단점
 // 1. 파일이 더러워짐
 // 2. 중복 스타일은 import 하기 때문에 css와 다를 바 없음
 // 3. 협업시 css 숙련도 이슈
-let NewBtn = styled.button(YellowButton);
+let NewBtn = styled.button(DefaultButton);
 
 let TestDiv = styled.div`
   background : grey;
@@ -40,14 +63,15 @@ let TestDiv = styled.div`
 // }
 
 function Detail(props) {
-  let [count, setCount] = useState(0)
+  let [count, setCount] = useState(1)
   // /detail/:id에서 :id 값 가져옴
-  let {id} = useParams();
-  let [alertString, setAlert] = useState(true);
-  let [num, setNum] = useState('');
-  let [tab, setTab] = useState(1);
+  let {id} = useParams()
+  let [alertString, setAlert] = useState(true)
+  let [num, setNum] = useState('')
+  let [tab, setTab] = useState(1)
   let [fade, setFade] = useState('')
   let dispatch = useDispatch()
+  let navigate = useNavigate()
 
   useEffect(() => {
     // console.log(id)
@@ -59,8 +83,6 @@ function Detail(props) {
     localStorage.setItem('watched', JSON.stringify(orgWatched))
   }, [id])
 
-  console.log(localStorage.getItem('watched'))
-
   useEffect(() => {
     let a = setTimeout(() => {
       setFade('end')
@@ -69,7 +91,7 @@ function Detail(props) {
       clearTimeout(a)
       setFade('')
     }
-  }, [ tab ])
+  }, [tab])
 
   // 이걸 언제 씀? side effect 보관함
   // useEffect 안의 코드는 html 렌더링 후에 동작
@@ -82,7 +104,19 @@ function Detail(props) {
     //  }
     // console.log(num);
     if (isNaN(num) == true) {
-      alert('숫자만 입력하세요');
+      alert('숫자만 입력하세요')
+    }
+    if (count < 1) {
+      console.log('1보다 작을 때')
+      alert('한 개 이상부터 주문 가능합니다.')
+      setCount(1)
+      return
+    }
+    if (count > 10) {
+      console.log('10보다 클 때')
+      alert('10개까지 주문 가능합니다.')
+      setCount(count -1)
+      return
     }
     let a = setTimeout(() => { setAlert(false) }, 2000)
     // console.log('안녕2')
@@ -94,7 +128,7 @@ function Detail(props) {
       clearTimeout(a) // mount시 실행 안되고 unmount시 실행됨
       // 서버로 데이터 요청하는 코드(2초 소요), 기존 데이터 요청은 제거해야 함
     }
-  }, [num]) // mount시, count라는 변수가 변할 때마다 코드 실행, [] 비워두면 mount 시에만 실행
+  }, [count, num]) // mount시, count라는 변수가 변할 때마다 코드 실행, [] 비워두면 mount 시에만 실행
 
   // 재렌더링마다 실행
   // 1회 실행
@@ -105,19 +139,28 @@ function Detail(props) {
       {
         alertString == true ? <div className='alert alert-warning'>2초 이내 구매시 할인</div> : null
       }
-      <input onChange={(e) => {setNum(e.target.value)}}></input>
-        <YellowButton bg='blue' onClick={() => { setCount(count + 1)}}>버튼</YellowButton>
-        { count }
-      <YellowButton bg='yellow'>버튼</YellowButton>
       <div className='detail-product-container'>  
         <div className='detail-product'>
-          <img className='detail-product-img' src={props.shoes[id].img}></img>
+          {
+            !props.allData[id].img ? (
+              <img className='detail-product-img' src={props.allData[id].img}></img>
+            ) : (
+              <img className='detail-product-img' src={props.allData[id].img}></img>
+            )
+          }
+          <div>
+            <CountText>수량</CountText>
+            <DefaultInput onChange={(e) => {setNum(e.target.value)}} value={ count } disabled />
+            <DefaultButton bg='#526D82' onClick={() => { setCount(count - 1)}}>-</DefaultButton>
+            <DefaultButton bg='#27374D' onClick={() => { setCount(count + 1)}}>+</DefaultButton>
+          </div>
+          
           <button className='btn' onClick={ () => {
-            dispatch(addItem({id : 3, name : 'Pink', count : 1}))
-          }}>주문하기</button>
-          <h2>{props.shoes[id].title}</h2>
-          <p>{props.shoes[id].price}</p>
-          <p>{props.shoes[id].content}</p>
+            dispatch(addItem({id : id, name : props.allData[id].title, count : count}))
+          }}>장바구니</button>
+          <h2>{props.allData[id].title}</h2>
+          <p>{props.allData[id].price}</p>
+          <p>{props.allData[id].content}</p>
         </div>  
       </div>
       <Nav variant="tabs" defaultActiveKey="link-0">

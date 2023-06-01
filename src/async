@@ -1,0 +1,31 @@
+let a = new Array(10000).fill(0)
+
+function async() {
+    return (
+        <div>
+            <div>
+                <div>안녕하십니까 전 {age + '/' + count}</div>
+                <button onClick={addAge}>누르면 한 살 먹기</button>
+            </div>
+            {
+                // 브라우저가 할 일
+                // 1. input 그리기
+                // 2. 입력받은거 출력하기 (<div></div>)
+                // startTransition 시작 시점을 뒤로 늦춰줌 (한가할 때 <div></div> 그려줌)
+            }
+            <input onChange={(e) => { 
+                startTransition(() => {
+                setName(e.target.value)
+                })
+            }}></input>
+            {
+                isPending ? '로딩중' : 
+                a.map(() => {
+                return <div>{ nameState }</div>
+                })
+            }
+        </div>
+    )
+}
+
+export default async

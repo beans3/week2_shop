@@ -1,7 +1,7 @@
 import { Table } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
 import { increase, setUserName } from "./userSlice.js";
-import { setCount, addCount } from "./store.js";
+import { subCount, addCount } from "./store.js";
 import { memo, useMemo, useState } from "react";
 
 // 꼭 필요할 때만 재렌더링
@@ -52,11 +52,18 @@ function Cart() {
                                 <td>{index + 1}</td>
                                 <td>{item.name}</td>
                                 <td>{item.count}</td>
-                                <td><button onClick={() => {
-                                    // 함수 실행해달라고 store.js에 요청
-                                    //dispatch(setCount(item.count))
-                                    dispatch(addCount(index))
-                                }}>변경</button></td>
+                                <td>
+                                    <button onClick={() => {
+                                        // 함수 실행해달라고 store.js에 요청
+                                        //dispatch(setCount(item.count))
+                                        dispatch(subCount(index))
+                                    }}>-</button>
+                                    <button onClick={() => {
+                                        // 함수 실행해달라고 store.js에 요청
+                                        //dispatch(setCount(item.count))
+                                        dispatch(addCount(index))
+                                    }}>+</button>
+                                </td>
                             </tr>
                         ))
                     }
